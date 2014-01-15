@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<script type="text/javascript">
+			( function() {
+				
+				var blinkTagPrototype = Object.create( HTMLElement.prototype );
+				blinkTagPrototype.createdCallback = function() {
+					var blinkTagTemplate = document.querySelector( '#blink-tag-template' );
+					var blinkTagTemplateClone = document.importNode( blinkTagTemplate.content, true );
+					
+					var shadowRoot = this.createShadowRoot();
+					shadowRoot.appendChild( blinkTagTemplateClone );
+					
+					var blinkingElement = shadowRoot.querySelector( '.blink' );
+					var initialOpacity = blinkingElement.style.opacity || 1.0;
+					var isDisplayed = true;
+					
+					setInterval( function() {
+						if ( isDisplayed ) {
+							blinkingElement.style.opacity = 0;
+							isDisplayed = false;
+						}	
+						else {
+							blinkingElement.style.opacity = initialOpacity;
+							isDisplayed = true;
+						}
+					}, 1000 );
+				};
+				
+				var blinkTag = document.register( 'blinking-item', { prototype : blinkTagPrototype } );	
+				
+			} )();
+		</script>
+	</head>
+	<body>
+		<section>
+			<p>Lorem Ipsum</p>
+			<blinking-item>I'm blinking!</blinking-item>
+		</section>
+		<template id="blink-tag-template">
+			<span class="blink"><content></content></span>
+		</template>
+	</body>
+
+
+</html>
