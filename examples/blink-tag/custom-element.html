@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<script type="text/javascript">
+			( function() {
+				
+				//Create the Prototype of our Custom Element
+				var blinkTagPrototype = Object.create( HTMLElement.prototype );
+				//Add a life-cycle event listener.  
+				blinkTagPrototype.createdCallback = function() {
+		
+					this.innerHTML = this.innerHTML + ' - Augmented Content';
+					
+				};
+				
+				//Register the Custom Element
+				var blinkTag = document.register( 'blinking-item', { prototype : blinkTagPrototype } );	
+				
+				//Create the Prototype for our Custom Element
+				var customButtonPrototype = Object.create( HTMLButtonElement.prototype );
+				
+				//Register the Custom Element.  This Element will now behave like a button since that 
+				//was the prototype we chose.
+				var customButtonTag = document.register( 'custom-button', { prototype : customButtonPrototype } );
+				
+			} )();
+		</script>
+	</head>
+	<body>
+		<section>
+			<p>Demonstration of the Custom Element specification.  Two element types have been registered 
+			   in this example: a <em>blinking-item</em> element and a <em>custom-button</em> element.</p>
+			<blinking-item>I'm a Blinking Item</blinking-item>
+			<p>A paragraph with a <button is="custom-button">Custom Button</button></p>
+		</section>
+	</body>
+
+
+</html>
