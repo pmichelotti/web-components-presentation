@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Simple Shadow DOM</title>
+	</head>
+	<body>
+		<p>
+			Lorem Ipsum.	
+		</p>
+		<div id="templated-shadow-dom-with-style-example-content-container">
+			Some initial content
+		</div>
+		<template id="templated-shadow-dom-with-style-template">
+			<style>
+				#item-heading {
+					color : green;
+				}
+				
+				p {
+					font-size : 1.5em;
+				}
+			</style>
+			<h1 id="item-heading">Heading of the Template</h1>
+			<p>Content of the Template</p>
+		</template>
+		<script type="text/javascript">
+			
+		( function() {
+		
+			var contentContainer = document.querySelector( '#templated-shadow-dom-with-style-example-content-container' );
+			
+			//Initialize the Shadow Root
+			var shadowRoot = contentContainer.createShadowRoot();
+			
+			//Clone the template
+			var shadowDomTemplate = document.querySelector( '#templated-shadow-dom-with-style-template' );
+			var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+			
+			//Set the content of the Shadow Root to our template content
+			shadowRoot.appendChild( shadowDomTemplateContent );
+			
+		} )();
+		
+		</script>
+	
+	</body>
+</html>
