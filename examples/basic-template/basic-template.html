@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Basic Template Example</title>
+	</head>
+	<body>
+		<div id="basic-template-example-content-container">
+		</div>
+		<template id="a-basic-template">
+			<script type="text/javascript">alert( 'hi' );</script>
+			<div class="templated-item">
+				<h2>Template Heading</h2>
+				<p>Template Content</p>
+			</div>
+		</template>
+		
+		<script type="text/javascript">
+			
+			( function() {
+				
+				//Locate the template element in our document
+				var basicTemplate = document.querySelector( '#a-basic-template' );
+				var contentContainer = document.querySelector( '#basic-template-example-content-container' );
+				
+				//Clone the content of the template
+				var clonedTemplateContent = document.importNode( basicTemplate.content, true );
+				
+				//Now we can modify the content
+				clonedTemplateContent.querySelector( 'h2' ).innerHTML = 'Our Cloned Template';
+				clonedTemplateContent.querySelector( 'p' ).innerHTML = 'This content was dynamically injected';
+				
+				//As the template is put into the active document, it "Goes Live".  Things such as scripts in the 
+				//template will run at this point
+				contentContainer.appendChild( clonedTemplateContent );
+				
+			} )();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Simple Shadow DOM</title>
+	</head>
+	<body>
+		<div id="templated-shadow-dom-example-content-container">
+			Some initial content
+		</div>
+		<template id="templated-shadow-dom-template">
+			<p>I came from a Template</p>
+		</template>
+		<script type="text/javascript">
+			
+		( function() {
+		
+			var contentContainer = document.querySelector( '#templated-shadow-dom-example-content-container' );
+			
+			//Initialize the Shadow Root
+			var shadowRoot = contentContainer.createShadowRoot();
+			
+			//Clone the template
+			var shadowDomTemplate = document.querySelector( '#templated-shadow-dom-template' );
+			var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+			
+			//Set the content of the Shadow Root to our template content
+			shadowRoot.appendChild( shadowDomTemplateContent );
+			
+		} )();
+		
+		</script>
+	
+	</body>
+</html>

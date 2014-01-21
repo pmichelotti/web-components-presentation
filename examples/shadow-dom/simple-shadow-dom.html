@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Simple Shadow DOM</title>
+	</head>
+	<body>
+		<div id="simple-shadow-dom-example-content-container">
+			Some initial content
+		</div>
+		<script type="text/javascript">
+			
+		( function() {
+		
+			var contentContainer = document.querySelector( '#simple-shadow-dom-example-content-container' );
+			
+			//Initialize the Shadow Root
+			var shadowRoot = contentContainer.createShadowRoot();
+			
+			//Set the content of the Shadow Root.  This will now be the visible content of the Shadow Host, however 
+			//the DOM content of the Shadow Host will remain unaltered
+			shadowRoot.innerHTML = '<p>I am Shadow DOM</p>';
+			
+		} )();
+		
+		</script>
+	
+	</body>
+</html>
