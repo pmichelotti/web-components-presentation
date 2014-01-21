@@ -3,3 +3,5 @@
 .settings/
 .idea/
 bower_components/
+node_modules/
+test/
