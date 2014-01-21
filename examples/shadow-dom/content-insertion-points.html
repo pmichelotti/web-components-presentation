@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Simple Shadow DOM</title>
+	</head>
+	<body>
+		<p>
+			Here is a little article layout.  The first paragraph is used as a &quot;teaser&quot; for the rest of the article.	
+		</p>
+		<div id="content-insertion-point-example-content-container">
+			<h1>An Article Heading</h1>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris cursus molestie odio in dignissim. Donec vitae consectetur ante. Sed lobortis dapibus ligula quis scelerisque. Donec placerat, odio in porta faucibus, mauris urna iaculis orci, eu molestie diam massa et nisi. Sed bibendum facilisis nibh, sit amet tincidunt ante elementum non. Etiam eleifend condimentum dui, id mattis nisl porta vitae. Etiam vestibulum eget tortor id venenatis. Proin accumsan lorem in dolor mollis lobortis. Aliquam a egestas lacus. Vivamus a odio enim. Donec vestibulum sagittis lorem in euismod.</p>
+
+			<p>Vestibulum imperdiet eros sed elit vulputate, id gravida justo faucibus. Pellentesque lacinia, nulla nec semper consequat, magna velit porta turpis, at luctus elit diam nec purus. Donec ultricies venenatis nulla in commodo. Morbi auctor libero ut tortor tempor rhoncus. Nunc in tellus semper, euismod orci nec, accumsan ante. Donec porttitor nisi id tempus adipiscing. Aenean ultricies sapien est, at lacinia massa molestie in. Suspendisse vel lacinia tortor, eu viverra elit. Duis ut rhoncus elit. Vestibulum vitae interdum sapien. Vivamus egestas odio lacus, vitae faucibus sem auctor vitae.</p>
+
+			<p>Aenean ac vehicula libero, eget cursus arcu. Duis nec pharetra sapien. Vivamus ultricies tortor tristique eleifend egestas. Fusce odio orci, iaculis vel dictum a, interdum quis velit. Quisque at congue nunc. Mauris ultrices non urna quis accumsan. Vestibulum eu dolor quam. Pellentesque viverra tincidunt felis, vitae blandit metus pretium quis. Vivamus viverra tellus sit amet urna vestibulum venenatis. Donec id lacinia nulla. Curabitur volutpat, enim sed fringilla tempus, augue nunc mattis odio, quis mattis diam magna vel odio. Aenean lacinia congue enim, non faucibus nulla ultrices vel. In hac habitasse platea dictumst.</p>
+		</div>
+		<template id="content-insertion-point-example-template">
+			<style>
+				header, section {
+					font-family : "courier";
+				}
+			
+				header {
+					color : blue;
+					text-align : center;
+				}
+				
+				.teaser {
+					border : 1px solid #8888AE;
+					border-radius : 10px;
+					padding : 15px;
+					
+					background-color : #DEDEFA;
+					
+					font-size : 1.25em;
+				}
+			</style>
+			<header id="item-heading"><content select="h1"></content></header>
+			<section class="teaser">
+				<content select="p:first-of-type"></content>		
+			</section>
+			<section class="document-content">
+				<content select="p"></content>
+			</section>
+		</template>
+		<script type="text/javascript">
+			
+		( function() {
+		
+			var contentContainer = document.querySelector( '#content-insertion-point-example-content-container' );
+			
+			//Initialize the Shadow Root
+			var shadowRoot = contentContainer.createShadowRoot();
+			
+			//Clone the template
+			var shadowDomTemplate = document.querySelector( '#content-insertion-point-example-template' );
+			var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+			
+			//Set the content of the Shadow Root to our template content
+			shadowRoot.appendChild( shadowDomTemplateContent );
+			
+		} )();
+		
+		</script>
+	
+	</body>
+</html>
