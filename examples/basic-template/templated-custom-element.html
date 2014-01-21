@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Basic Template Example</title>
+		
+		<script type="text/javascript">
+			
+			( function() {
+				
+				var basicTemplateExampleTagPrototype = Object.create( HTMLDivElement.prototype );
+				basicTemplateExampleTagPrototype.createdCallback = function() {
+					
+					//Locate the template element in our document
+					var basicTemplate = document.querySelector( '#another-basic-template' );
+					
+					//Clone the content of the template
+					var clonedTemplateContent = document.importNode( basicTemplate.content, true );
+					
+					//Now we can modify the content
+					clonedTemplateContent.querySelector( 'h2' ).innerHTML = 'Another Cloned Template';
+					clonedTemplateContent.querySelector( 'p' ).innerHTML = 'This time the Template was cloned as part of the creation callback for our custom element';
+					
+					//As the template is put into the active document, it "Goes Live".  Things such as scripts in the 
+					//template will run at this point
+					this.appendChild( clonedTemplateContent );
+					
+				};
+
+				document.register( 'basic-template-example', { extends : "div", prototype : basicTemplateExampleTagPrototype } );	
+				
+			} )();
+		</script>
+		
+	</head>
+	<body>
+		<div is="basic-template-example">
+		</div>
+		<template id="another-basic-template">
+			<div class="templated-item">
+				<h2>Template Heading</h2>
+				<p>Template Content</p>
+			</div>
+		</template>
+		
+
+	</body>
+</html>
