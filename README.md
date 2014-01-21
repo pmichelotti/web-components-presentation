@@ -2,6 +2,8 @@ web-components-presentation
 ===========================
 
 
-# Presentation Install
+## Presentation Install
 run the following command inside the presentation folder
-    bower install
+```javascript
+bower install
+```
