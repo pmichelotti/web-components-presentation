@@ -223,7 +223,7 @@
             	<script type="text/template">
                   ## Extending an Element Type
 
-                  A new element may extend an existing element.  This lets you leverage the browsers 
+                  A new element may extend an existing element.  This lets you leverage the browser's 
                   buildin mechanisms for the existing element while defining your own markup semantics
 
                   ```
@@ -320,24 +320,280 @@
                 </script>
             </section>
         </section>
+        
+        <!-- START Shadow DOM -->
         <section>
         	<section>
-        		<h2>Shadow DOM</h2>
+        		<h2>Shadow DOM<img src="images/shadowdom/shadow.png" style="border: 0px; background : none; margin : 0px; box-shadow : none;"/></h2>
+        		<h3>(aka &quot;The Juice&quot;)</h3>
         	</section>
-            <section data-markdown>
-                <script type="text/template">
-                    ## Shadow DOM
+        	<section>
+        		<h2>What's so Shady About it?</h2>
+        		<img src="images/shadowdom/Shadow-Tree.png" />
+        		
+        		<aside class="notes">
+        			Shadow DOM gives you the ability to render the content of a Shadow Root in place of 
+        			the content of the associated Shadow Host without changing the DOM structure of the 
+        			Shadow Host.  It is shady in so much as the Shadow Root overshadows the Shadow DOM.
+        		</aside>
+        	</section>
+        	<section data-markdown>
+        	    <script type="text/template">
+                ## A Simple Example
+                
+                ```
+                <div id="simple-shadow-dom-example-content-container">
+                        Some initial content
+                </div>
+                
+                ...
+                        
+                ( function() {
+                
+                  var contentContainer = document.querySelector( 
+                    '#simple-shadow-dom-example-content-container' );
+                        
+                  //Initialize the Shadow Root
+                  var shadowRoot = contentContainer.createShadowRoot();
+                        
+                  //Set the content of the Shadow Root.  This will now be 
+                  //the visible content of the Shadow Host, however 
+                  //the DOM content of the Shadow Host will remain unaltered
+                  shadowRoot.innerHTML = '<p>I am Shadow DOM</p>';
+                        
+                } )();
 
-                    ```
-                    <blink-item>
-                        Content to Blink
-                        <span class="blink">Content to Blink</span>
-                    </blink-item>
-                    ```
+                ```
 
-                </script>
-            </section>
+                <div id="simple-shadow-dom-example-content-container">
+                        Some initial content
+                </div>
+        		</script>
+        	</section>
+        	<section data-markdown>
+        	    <script type="text/template">
+                ## Templated Shadow Content
+                
+                ```
+                <div id="templated-shadow-dom-example-content-container">
+                        Some initial content
+                </div>
+                
+                ...
+
+                <template id="templated-shadow-dom-template">
+                  <p>I came from a Template</p>
+                </template>
+            
+                ...
+            
+                ( function() {
+                
+                  var contentContainer = document.querySelector( '#templated-shadow-dom-example-content-container' );
+                        
+                  //Initialize the Shadow Root
+                  var shadowRoot = contentContainer.createShadowRoot();
+                        
+                  //Clone the template
+                  var shadowDomTemplate = document.querySelector( '#templated-shadow-dom-template' );
+                  var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+                        
+                  //Set the content of the Shadow Root to our template content
+                  shadowRoot.appendChild( shadowDomTemplateContent );
+                        
+                } )();
+
+                ```
+
+                <div id="templated-shadow-dom-example-content-container">
+                        Some initial content
+                </div>
+                <template id="templated-shadow-dom-template">
+                        <p>I came from a Template</p>
+                </template>
+        		</script>
+        	</section>
+        	<section data-markdown>
+        	    <script type="text/template">
+                ## The Shadow Boundary
+                
+                ```
+                <div id="templated-shadow-dom-with-style-example-content-container">
+                  Some initial content
+                </div>
+                
+                ...
+
+                <template id="templated-shadow-dom-with-style-template">
+                  <style>
+                    #item-heading {
+                      color : green;
+                    }
+                                
+                    p {
+                      font-size : 1.5em;
+                    }
+                  </style>
+                  <h1 id="item-heading">Heading of the Template</h1>
+                  <p>Content of the Template</p>
+                </template>
+
+                ...
+                        
+                ( function() {
+                
+                  var contentContainer = document.querySelector( '#templated-shadow-dom-with-style-example-content-container' );
+                        
+                  //Initialize the Shadow Root
+                  var shadowRoot = contentContainer.createShadowRoot();
+                        
+                  //Clone the template
+                  var shadowDomTemplate = document.querySelector( '#templated-shadow-dom-with-style-template' );
+                  var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+                        
+                  //Set the content of the Shadow Root to our template content
+                  shadowRoot.appendChild( shadowDomTemplateContent );
+                        
+                } )();
+
+                ```
+
+                <div id="templated-shadow-dom-with-style-example-content-container">
+                        Some initial content
+                </div>
+                <template id="templated-shadow-dom-with-style-template">
+                        <style>
+                                #item-heading {
+                                        color : green;
+                                }
+                                
+                                p {
+                                        font-size : 1.5em;
+                                }
+                        </style>
+                        <h1 id="item-heading">Heading of the Template</h1>
+                        <p>Content of the Template</p>
+                </template>
+        		</script>
+        	</section>
+        	<section data-markdown>
+        	    <script type="text/template">
+                ## Content Insertion Points
+                
+                ```
+                <div id="content-insertion-point-example-content-container">
+                  <h1>An Article Heading</h1>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris cursus molestie odio in dignissim. Donec vitae consectetur ante. Sed lobortis dapibus ligula quis scelerisque. Donec placerat, odio in porta faucibus, mauris urna iaculis orci, eu molestie diam massa et nisi. Sed bibendum facilisis nibh, sit amet tincidunt ante elementum non. Etiam eleifend condimentum dui, id mattis nisl porta vitae. Etiam vestibulum eget tortor id venenatis. Proin accumsan lorem in dolor mollis lobortis. Aliquam a egestas lacus. Vivamus a odio enim. Donec vestibulum sagittis lorem in euismod.</p>
+
+                  <p>Vestibulum imperdiet eros sed elit vulputate, id gravida justo faucibus. Pellentesque lacinia, nulla nec semper consequat, magna velit porta turpis, at luctus elit diam nec purus. Donec ultricies venenatis nulla in commodo. Morbi auctor libero ut tortor tempor rhoncus. Nunc in tellus semper, euismod orci nec, accumsan ante. Donec porttitor nisi id tempus adipiscing. Aenean ultricies sapien est, at lacinia massa molestie in. Suspendisse vel lacinia tortor, eu viverra elit. Duis ut rhoncus elit. Vestibulum vitae interdum sapien. Vivamus egestas odio lacus, vitae faucibus sem auctor vitae.</p>
+
+                  <p>Aenean ac vehicula libero, eget cursus arcu. Duis nec pharetra sapien. Vivamus ultricies tortor tristique eleifend egestas. Fusce odio orci, iaculis vel dictum a, interdum quis velit. Quisque at congue nunc. Mauris ultrices non urna quis accumsan. Vestibulum eu dolor quam. Pellentesque viverra tincidunt felis, vitae blandit metus pretium quis. Vivamus viverra tellus sit amet urna vestibulum venenatis. Donec id lacinia nulla. Curabitur volutpat, enim sed fringilla tempus, augue nunc mattis odio, quis mattis diam magna vel odio. Aenean lacinia congue enim, non faucibus nulla ultrices vel. In hac habitasse platea dictumst.</p>
+                </div>
+                
+                ...
+
+                <template id="content-insertion-point-example-template">
+                  <style>
+                    header, section {
+                      font-family : "courier";
+                    }
+                        
+                    header {
+                      color : blue;
+                      text-align : center;
+                    }
+                                
+                    .teaser {
+                      border : 1px solid #8888AE;
+                      border-radius : 10px;
+                      padding : 15px;
+                                        
+                      background-color : #414A4C;
+                    }
+
+                    section {
+	
+                      font-size : .5em;
+ 
+                    }
+                  </style>
+                  <header id="item-heading"><content select="h1"></content></header>
+                  <section class="teaser">
+                    <content select="p:first-of-type"></content>                
+                  </section>
+                  <section class="document-content">
+                    <content select="p"></content>
+                  </section>
+                </template>
+            
+                ...
+            
+                ( function() {
+                
+                  var contentContainer = document.querySelector( '#content-insertion-point-example-content-container' );
+                        
+                  //Initialize the Shadow Root
+                  var shadowRoot = contentContainer.createShadowRoot();
+                        
+                  //Clone the template
+                  var shadowDomTemplate = document.querySelector( '#content-insertion-point-example-template' );
+                  var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+                        
+                  //Set the content of the Shadow Root to our template content
+                  shadowRoot.appendChild( shadowDomTemplateContent );
+                        
+                } )();
+
+                ```
+
+        		</script>
+        	</section>        	
+        	<section>
+        		<h2>Content Insertion Points Continued</h2>
+        		<div id="content-insertion-point-example-content-container">
+                        <h1>An Article Heading</h1>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris cursus molestie odio in dignissim. Donec vitae consectetur ante. Sed lobortis dapibus ligula quis scelerisque. Donec placerat, odio in porta faucibus, mauris urna iaculis orci, eu molestie diam massa et nisi. Sed bibendum facilisis nibh, sit amet tincidunt ante elementum non. Etiam eleifend condimentum dui, id mattis nisl porta vitae. Etiam vestibulum eget tortor id venenatis. Proin accumsan lorem in dolor mollis lobortis. Aliquam a egestas lacus. Vivamus a odio enim. Donec vestibulum sagittis lorem in euismod.</p>
+
+                        <p>Vestibulum imperdiet eros sed elit vulputate, id gravida justo faucibus. Pellentesque lacinia, nulla nec semper consequat, magna velit porta turpis, at luctus elit diam nec purus. Donec ultricies venenatis nulla in commodo. Morbi auctor libero ut tortor tempor rhoncus. Nunc in tellus semper, euismod orci nec, accumsan ante. Donec porttitor nisi id tempus adipiscing. Aenean ultricies sapien est, at lacinia massa molestie in. Suspendisse vel lacinia tortor, eu viverra elit. Duis ut rhoncus elit. Vestibulum vitae interdum sapien. Vivamus egestas odio lacus, vitae faucibus sem auctor vitae.</p>
+
+                        <p>Aenean ac vehicula libero, eget cursus arcu. Duis nec pharetra sapien. Vivamus ultricies tortor tristique eleifend egestas. Fusce odio orci, iaculis vel dictum a, interdum quis velit. Quisque at congue nunc. Mauris ultrices non urna quis accumsan. Vestibulum eu dolor quam. Pellentesque viverra tincidunt felis, vitae blandit metus pretium quis. Vivamus viverra tellus sit amet urna vestibulum venenatis. Donec id lacinia nulla. Curabitur volutpat, enim sed fringilla tempus, augue nunc mattis odio, quis mattis diam magna vel odio. Aenean lacinia congue enim, non faucibus nulla ultrices vel. In hac habitasse platea dictumst.</p>
+                </div>
+                <template id="content-insertion-point-example-template">
+                        <style>
+                                header, section {
+                                        font-family : "courier";
+                                }
+                        
+                                header {
+                                        color : blue;
+                                        text-align : center;
+                                }
+                                
+                                .teaser {
+                                        border : 1px solid #8888AE;
+                                        border-radius : 10px;
+                                        padding : 15px;
+                                        
+                                        background-color : #414A4C;
+                                }
+                                
+                                section {
+                                		font-size : .5em;
+                                }
+                        </style>
+                        <header id="item-heading"><content select="h1"></content></header>
+                        <section class="teaser">
+                                <content select="p:first-of-type"></content>                
+                        </section>
+                        <section class="document-content">
+                                <content select="p"></content>
+                        </section>
+                </template>
+        	</section>
+        	
         </section>
+        <!--  END Shadow DOM -->
+        
         <section>
         	<section>
         		<h2>HTML Imports</h2>
@@ -351,9 +607,16 @@
         <section>
             <h2>What does this give us?</h2>
             <ul>
-                <li>Reusable components</li>
-                <li>Safe components</li>
+                <li>Reusable Components</li>
+                <li>Safe Components</li>
+                <li>Modular Application Development</li>
             </ul>
+            
+            <aside class="notes">
+            	<p>Reusability: Define once use anywhere without repeating complex DOM, style, or scrip structures</p>
+            	<p>Safety: No need to worry about CSS or JS interactions - styles and scripts either &quot;leaking&quot; out of or into the widget</p>
+            	<p>Modularity: True and native modules</p>	
+            </aside>
         </section>
         <section>
             <section>
@@ -369,6 +632,14 @@
         <section>
         	<section>
         		<h2>Useful Links</h2>
+        		<ul>
+        			<li><a href="http://www.w3.org/standards/techs/components#w3c_all">W3C Web Components</a> Links to and status of all the specs</li>
+        			<li><a href="http://www.w3.org/TR/components-intro/">W3C Intro to Web Components</a></li>
+        			<li><a href="http://www.html5rocks.com/en/tutorials/webcomponents/customelements/">HTML5 Rocks's Crash Course on Custom Elements</a></li>
+        			<li><a href="http://www.html5rocks.com/en/tutorials/webcomponents/imports/">HTML5 Rocks's HTML Imports Tutorials</a></li>
+        			<li><a href="http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/">HTML5 Rock's Shadow DOM Introduction</a></li>
+        			<li><a href="http://html5-demos.appspot.com/shadowdom-visualizer">Shadow DOM Visualizer</a></li>
+        		</ul>
         	</section>
         </section>
     </div>
@@ -406,6 +677,78 @@
             { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
         ]
     });
+    
+    //Initialization of anything that needs to wait until Reveal is done
+    Reveal.addEventListener( 'ready', function() {
+    
+    	//Shadow-DOM Example 1
+    	( function() {
+            
+            var contentContainer = document.querySelector( 
+            		'#simple-shadow-dom-example-content-container' );
+                  
+            //Initialize the Shadow Root
+            var shadowRoot = contentContainer.createShadowRoot();
+                  
+            //Set the content of the Shadow Root.  This will now be the 
+            //visible content of the Shadow Host, however 
+            //the DOM content of the Shadow Host will remain unaltered
+            shadowRoot.innerHTML = '<p>I am Shadow DOM</p>';
+                  
+          } )();
+    	
+    	//Shadow-DOM Example 2
+        ( function() {
+            
+            var contentContainer = document.querySelector( '#templated-shadow-dom-example-content-container' );
+            
+            //Initialize the Shadow Root
+            var shadowRoot = contentContainer.createShadowRoot();
+            
+            //Clone the template
+            var shadowDomTemplate = document.querySelector( '#templated-shadow-dom-template' );
+            var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+            
+            //Set the content of the Shadow Root to our template content
+            shadowRoot.appendChild( shadowDomTemplateContent );
+            
+    	} )();
+    	
+    	//Shadow-DOM Example 3
+        ( function() {
+            
+            var contentContainer = document.querySelector( '#templated-shadow-dom-with-style-example-content-container' );
+            
+            //Initialize the Shadow Root
+            var shadowRoot = contentContainer.createShadowRoot();
+            
+            //Clone the template
+            var shadowDomTemplate = document.querySelector( '#templated-shadow-dom-with-style-template' );
+            var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+            
+            //Set the content of the Shadow Root to our template content
+            shadowRoot.appendChild( shadowDomTemplateContent );
+            
+        } )();
+    	
+    	//Shadow-DOM Example 4
+        ( function() {
+            
+            var contentContainer = document.querySelector( '#content-insertion-point-example-content-container' );
+            
+            //Initialize the Shadow Root
+            var shadowRoot = contentContainer.createShadowRoot();
+            
+            //Clone the template
+            var shadowDomTemplate = document.querySelector( '#content-insertion-point-example-template' );
+            var shadowDomTemplateContent = document.importNode( shadowDomTemplate.content, true );
+            
+            //Set the content of the Shadow Root to our template content
+            shadowRoot.appendChild( shadowDomTemplateContent );
+            
+   	 	} )();
+    	
+    } );
 
 </script>
 
