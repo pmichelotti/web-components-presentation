@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="css/reveal.min.css">
-    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+    <link rel="stylesheet" href="css/theme/beige.css" id="theme">
 
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
@@ -28,6 +28,8 @@
     <!--[if lt IE 9]>
     <script src="lib/js/html5shiv.js"></script>
     <![endif]-->
+
+    <link rel="import" href="../examples/slide-show/slide-show.html">
 </head>
 
 <body>
@@ -120,43 +122,17 @@
         
         <!-- END Introduction -->
 
-        <!-- Example of nested vertical slides -->
-        <section>
-            <section data-markdown>
-                <script type="text/template">
-                    ## DIV Soup
 
-                    We all know the chaos that insues
-
-                    ```
-                    <div class="center">
-                        <div class="left">
-                            <h1>bla bla bla</h1>
-                        </div>
-                    </div>
-                    ```
-                </script>
-            </section>
-            <section>
-
-            </section>
-            <section>
-
-            </section>
-            <section>
-
-            </section>
-        </section>
         <section>
             <section>
 
                 <h2>What problems do web components solve? </h2>
                 <br/>
-                <ul>
-                    <li class="fragment"> selector spill-over </li>
-                    <li class="fragment"> div soup </li>
-                    <li class="fragment"> code duplication </li>
-                </ul>
+
+                    <p class="fragment"> selector spill-over </p>
+                    <p class="fragment"> div soup </p>
+                    <p class="fragment"> code duplication </p>
+
 
             </section>
         </section>
@@ -306,18 +282,86 @@
         <section>
         	<section>
         		<h2>Templates</h2>
+                <p>Then death of the &lt;script type="text/html"&gt; </p>
         	</section>
+            <section>
+                <h2>What are the Benefits of templates?</h2>
+                <ul>
+                    <li class="fragment">All content in the tag is inert</li>
+                    <li class="fragment">Content is hidden from the DOM</li>
+                </ul>
+
+                <aside class="notes">
+                    all content in the tag is inert. Meaning that any images or scripts within the tag will not be loaded or run until that template is initialized and cloned into the DOM.
+                    The content inside the tag is hidden from the DOM.
+
+                </aside>
+            </section>
             <section data-markdown>
                 <script type="text/template">
                     ## Templates
-
+                    <br/>
                     ```
                     <template id="blink-tag-template">
-                        <span class="blink"><content></content></span>
+                        <span class="blink">I am going to blink</span>
                     </template>
                     ```
 
                 </script>
+            </section>
+            <section data-markdown>
+                <script type="text/template">
+                    ## Lets Stamp out that template
+                    <br/>
+                    ```
+                    <template id="blink-tag-template">
+                        <span class="blink">I am going to blink</span>
+                    </template>
+
+                     <!-- our container we want to add our template to -->
+                    <div id="addFlashyContent"></div>
+                    ```
+
+                    ```javascript
+                    //find the template tag
+                    var template = document.querySelector("#blink-tag-template");
+
+                    //grab the contents of the template tag
+                    var templateContent = document.importNode( template.content, true );
+
+                    //find the container
+                    var container = document.querySelector("#addFlashyContent");
+
+                    //append the template content to the container
+                    container.appendChild ( templateContent );
+                    ```
+
+                </script>
+            </section>
+            <section data-markdown>
+                <script type="text/template">
+                    ## Now our container looks like this
+                    <br/>
+                    ```
+                    <div id="addFlashyContent">
+                        <span class="blink">I am going to blink</span>
+                    </div>
+                    ```
+                    <br/>
+                    ### And displays like this
+
+                    <template id="blink-tag-template-for-template-slides">
+                        <span class="blink">I am going to blink</span>
+                    </template>
+
+                    <!-- our container we want to add our template to -->
+                    <div id="addFlashyContent"></div>
+
+
+                </script>
+
+
+
             </section>
         </section>
         
@@ -597,7 +641,86 @@
         <section>
         	<section>
         		<h2>HTML Imports</h2>
+                <p>We can finally import html</p>
         	</section>
+
+            <section data-markdown>
+                <script type="text/template">
+                    ## The key to reusability
+
+                    ```html
+                    <link rel="import" href="components/blinking-item.html">
+                    ```
+                    <br/>
+
+                    * Loads all html markup
+                    * Loads / runs all scripts
+                    * Loads all imports realitive to the current location
+
+
+                </script>
+
+            </section>
+            <section data-markdown>
+                <script type="text/template">
+                    ## Simply add an import to your page
+
+                    ```html
+                    <link rel="import" href="components/blinking-item.html">
+                    ```
+
+                    <br/>
+
+                    You get all this for free
+                    ```
+                    ( function() {
+
+                        var blinkTagPrototype = Object.create( HTMLElement.prototype );
+                        blinkTagPrototype.createdCallback = function() {
+                        var blinkTagTemplate = document.querySelector( '#blink-tag-template' );
+                        var blinkTagTemplateClone = document.importNode( blinkTagTemplate.content, true );
+
+                        var shadowRoot = this.createShadowRoot();
+                        shadowRoot.appendChild( blinkTagTemplateClone );
+
+                        var blinkingElement = shadowRoot.querySelector( '.blink' );
+                        var initialOpacity = blinkingElement.style.opacity || 1.0;
+                        var isDisplayed = true;
+
+                        setInterval( function() {
+                            if ( isDisplayed ) {
+                                blinkingElement.style.opacity = 0;
+                                isDisplayed = false;
+                            }
+                            else {
+                                blinkingElement.style.opacity = initialOpacity;
+                                isDisplayed = true;
+                            }
+                        }, 1000 );
+
+
+                        document.register( 'blinking-item', { prototype : blinkTagPrototype } );
+
+                    } )();
+
+                    ...
+
+                    <template id="blink-tag-template">
+                        <span class="blink"><content></content></span>
+                    </template>
+                    ```
+
+
+
+
+                </script>
+
+                <aside class="notes">
+                    <p>Talk about how this could help with frameworks</p>
+                </aside>
+
+
+            </section>
         </section>
         
         <!-- START Putting it all Together -->
@@ -650,6 +773,16 @@
                   <p>And as the kids say --- <blinking-item>&quot;booyah&quot;</blinking-item></p>
 				</script>
         	</section>
+            <section>
+
+                <h2>Slide Show Component</h2>
+                <slide-show>
+                    <img src="images/Chrome.jpeg"/>
+                    <img src="images/Chrome.jpeg"/>
+                    <img src="images/Chrome.jpeg"/>
+                    <img src="images/Chrome.jpeg"/>
+                </slide-show>
+            </section>
         </section>
         <!-- END Putting it all Together -->
         
@@ -676,6 +809,10 @@
                     <li><a href="http://www.polymer-project.org/"><span style=" background: url(images/polymerLogo.svg); display: inline-block; height: 50px; width: 50px; text-indent: -990em;">t</span> Polymer</a> </li>
                 </ul>
 
+            </section>
+            <section>
+                <h2>Thank you</h2>
+                <p class="fragment">Questions?</p>
             </section>
         </section>
         <section>
@@ -733,6 +870,21 @@
     
     //Initialization of anything that needs to wait until Reveal is done
     Reveal.addEventListener( 'ready', function() {
+
+        //Template Example
+        ( function() {
+            //find the template tag
+            var template = document.querySelector("#blink-tag-template-for-template-slides");
+
+            //grab the contents of the template tag
+            var templateContent = document.importNode( template.content, true );
+
+            //find the container
+            var container = document.querySelector("#addFlashyContent");
+
+            //set the containers inner HTML to the templates
+            container.appendChild ( templateContent );
+        } )();
     
     	//Shadow-DOM Example 1
     	( function() {
