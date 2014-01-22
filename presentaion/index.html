@@ -56,7 +56,7 @@
 	            </aside>
             </section>
             <section>
-				<h2><blink-item>The Blink Tag!</blink-item></h2>
+				<h2><blink-item>The &lt;Blink&gt; Tag!</blink-item></h2>
             	
             	<aside class="notes">
             		One of these experiments was the failed blink tag implemented in Netscape Navigator.  This tag caused the contained text to blink, as the name would suggest, at a regular interval.  It delighted ever 14 year old aspiring web developer who discovered it and appeared right alongside the visit count on nearly every site.  
@@ -76,27 +76,25 @@
             		Now pages behaving as applications is becoming increasingly common, and this can produce tension between the needs of the application and the document-centric nature historically present in HTML markup
             	</aside>
             </section>
-            <section>
-				<h2>Back to the <blink-item>Blink Tag</blink-item></h2>
+            <section data-markdown>
+                <script type="text/template">
+                ## Back to the <blink-item>Blink Tag</blink-item>
 
-				<pre>
-					<code class="html" data-trim>
-<span class="blink">I might could blink</span>
-
-<script type="text/javascript">
-	
-  $( document ).ready( function() {
-    setInterval( function() {
-      $( '.blink' ).css( 
-        'opacity', 
-        function() { 
-          return 1.0 - $( this ).css( 'opacity' ); 
-      } );
-    }, 1000 );
-  } );
-</script>
-					</code>
-				</pre>
+                ```
+                <span class="blink">I might could blink</span>
+                ...
+                $( document ).ready( function() {
+                  setInterval( function() {
+                    $( '.blink' ).css( 
+                      'opacity', 
+                      function() { 
+                        return 1.0 - $( this ).css( 'opacity' ); 
+                      } );
+                    }, 1000 );
+                 } );
+                ```
+				</script>
+				
             	<aside class="notes">
             		While the blink tag is laughable today, it’s actually particularly useful to have such a capable tag if it serves your purpose.  Let’s take a look at an implementation of the functionality this tag provided which you might produce when faced with similar requirements.
             	</aside>
@@ -163,7 +161,7 @@
             </section>
         </section>
         
-        <!-- Introduction of the New Blink Tag Implementation -->
+        <!-- START Introduction of the New Blink Tag Implementation -->
         <section>
             <section>
 
@@ -185,21 +183,126 @@
 
             </section>
         </section>
+        <!-- END Introduction of New Blink Tag Implementation -->
+        
+        <!-- START Custom Elements -->
         <section>
         	<section>
         		<h2>Custom Elements</h2>
+        		<p>Defining new markup through element registration</p>
         	</section>
             <section data-markdown>
                 <script type="text/template">
-                    ## Custom Elements
+                    ## Registering a Custom Element
+
+                    New elements types can be registered using the document.register method
 
                     ```
-                    <blink-item> Content to Blink </blink-item>
+                    //Create the Prototype of our Custom Element
+                    var blinkTagPrototype = Object.create( HTMLElement.prototype );
+                    //Register the Custom Element
+                    document.register( 'blinking-item-1', { prototype : blinkTagPrototype } ); 
                     ```
 
+                    <blinking-item-1>I'm in a blinking-item-1 tag</blinking-item-1>
+                </script>
+                
+                <script type="text/javascript">
+	                ( function() {
+	                    
+	                    //Create the Prototype of our Custom Element
+	                    var blinkTagPrototype = Object.create( HTMLElement.prototype );
+	                    
+	                    //Register the Custom Element
+	                    var blinkTag = document.register( 'blinking-item-1', { prototype : blinkTagPrototype } );        
+	  
+	            	} )();
+                </script>
+            </section>
+            <section data-markdown>
+            	<script type="text/template">
+                  ## Extending an Element Type
+
+                  A new element may extend an existing element.  This lets you leverage the browsers 
+                  buildin mechanisms for the existing element while defining your own markup semantics
+
+                  ```
+                  //Create the Prototype for our Custom Element
+                  var customButtonPrototype = Object.create( HTMLButtonElement.prototype );
+                                
+                  //Register the Custom Element.  This Element will now behave like a button since that 
+                  //was the prototype we chose.
+                  var customButtonTag = document.register( 'custom-button', { prototype : customButtonPrototype } );
+                  ```
+
+                  <button is="custom-button">I'm a Custom Button</button>
+				</script>
+				<script type="text/javascript">
+	                ( function() {
+	                    
+	                    //Create the Prototype of our Custom Element
+	                    var customButtonPrototype = Object.create( HTMLButtonElement.prototype );
+	                    
+	                    //Register the Custom Element
+	                    document.register( 'custom-button', { prototype : customButtonPrototype } );        
+	  
+	            	} )();
+				</script>
+            </section>
+            <section>
+            	<h2>Not Super Interesting Yet...</h2>
+            </section>
+            <section>
+            	<h2>Lifecycle Events</h2>
+            	<p>Custom Element expose four lifecycle events</p>
+            	<ul>
+            		<li>createdCallback</li>
+            		<li>attachedCallback</li>
+            		<li>detachedCallback</li>
+            		<li>attributeChangedCallback( attrName, oldVal, newVal )</li>
+            	</ul>
+            </section>
+            <section data-markdown>
+                <script type="text/template">
+                  ## Leveraging Lifecycle Events
+
+                  ```
+                  //Create the Prototype of our Custom Element
+                  var blinkTagPrototype = Object.create( HTMLElement.prototype );
+                  //Add a life-cycle event listener.  
+                  blinkTagPrototype.createdCallback = function() {
+                
+                     this.innerHTML = this.innerHTML + ' - Augmented Content';
+                                        
+                  };
+
+                  //Register the Custom Element
+                  var blinkTag = document.register( 'blinking-item-2', { prototype : blinkTagPrototype } );
+                  ```   
+                
+                  <blinking-item-2>I'm in a blinking-item-2 tag</blinking-item-2>  
+                </script>
+                <script type="text/javascript">
+	                ( function() {
+	                    
+	                    //Create the Prototype of our Custom Element
+	                    var blinkTagPrototype = Object.create( HTMLElement.prototype );
+	                    //Add a life-cycle event listener.  
+	                    blinkTagPrototype.createdCallback = function() {
+	                  
+	                       this.innerHTML = this.innerHTML + ' - Augmented Content';
+	                                          
+	                    };
+	                    
+	                    //Register the Custom Element
+	                    var blinkTag = document.register( 'blinking-item-2', { prototype : blinkTagPrototype } );        
+	  
+	            	} )();
                 </script>
             </section>
         </section>
+        <!-- END Custom Elements -->
+        
         <section>
         	<section>
         		<h2>Templates</h2>
