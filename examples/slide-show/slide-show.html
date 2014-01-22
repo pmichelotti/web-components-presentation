@@ -1,7 +1,36 @@
 <template id="slide-showMarkUp">
-            <span class="blink">
-                <content select="img"></content>
-            </span>
+    <style>
+        .slideShow{
+            width: 615px;
+            margin: 10px auto;
+            overflow: hidden;
+            position: relative;
+        }
+        .slideContainer{
+            width: 6000px;
+        }
+        .slideContainer .currentSlide{
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+        }
+        ::content img{
+            border: solid #000000 1px;
+            display: none;
+            margin: 0 5px;
+        }
+
+    </style>
+    <div class="slideShow">
+        <div class="slideContainer">
+            <content select="img"></content>
+            <p class="currentSlide">1</p>
+        </div>
+        <button class="prv">Previous</button>
+        <button class="nxt">Next</button>
+    </div>
+
+
 </template>
 
 <script type="text/javascript">
@@ -11,13 +40,100 @@
 
 
         slideShowPrototype.createdCallback = function(){
-            var slideShowTemplate = document.querySelector('#slide-showMarkUp');
+            var slideShowTemplate = document.querySelector('#slide-showMarkUp' );
             var slideShowTemplateContent = document.importNode( slideShowTemplate.content, true );
+
+            var currentImg = 0;
+
+            var self = this;
+            self.querySelectorAll('img')[currentImg].style.display="block";
+            var currentSlideIndicator = slideShowTemplateContent.querySelector('.currentSlide');
+
+            slideShowTemplateContent.querySelector( 'button.prv' ).addEventListener('click', function(e){
+
+                if( currentImg == 0 ){
+                    self.querySelectorAll('img')[currentImg].style.display="none";
+                    self.querySelectorAll('img')[self.querySelectorAll('img').length - 1].style.opacity="0";
+                    currentImg = self.querySelectorAll('img').length - 1;
+                    self.querySelectorAll('img')[currentImg].style.display="block";
+                    var fadeValue = 0;
+                    var fadeInterval = setInterval(function(){
+                        fadeValue = fadeValue + 0.1;
+                        self.querySelectorAll('img')[currentImg].style.opacity=fadeValue;
+                        if(fadeValue > 1){
+                            clearInterval(fadeValue);
+                        }
+
+                    }, 30)
+
+                    currentSlideIndicator.innerHTML = self.querySelectorAll('img').length;
+                }else{
+                    self.querySelectorAll('img')[currentImg].style.display="none";
+                    self.querySelectorAll('img')[currentImg - 1].style.opacity="0";
+                    currentImg --;
+                    self.querySelectorAll('img')[currentImg].style.display="block";
+                    var fadeValue = 0;
+                    var fadeInterval = setInterval(function(){
+                        fadeValue = fadeValue + 0.1;
+                        self.querySelectorAll('img')[currentImg].style.opacity=fadeValue;
+                        if(fadeValue > 1){
+                            clearInterval(fadeValue);
+                        }
+
+                    }, 30)
+                    currentSlideIndicator.innerHTML = currentImg + 1;
+                }
+
+            });
+
+            slideShowTemplateContent.querySelector( 'button.nxt' ).addEventListener('click', function(e){
+                if(currentImg == self.querySelectorAll('img').length -1){
+                    self.querySelectorAll('img')[currentImg].style.display="none";
+                    self.querySelectorAll('img')[0].style.opacity="0";
+                    currentImg = 0;
+                    self.querySelectorAll('img')[currentImg].style.display="block";
+                    var fadeValue = 0;
+                    var fadeInterval = setInterval(function(){
+                        fadeValue = fadeValue + 0.1;
+                        self.querySelectorAll('img')[currentImg].style.opacity=fadeValue;
+                        if(fadeValue > 1){
+                            clearInterval(fadeValue);
+                        }
+
+                    }, 30)
+
+                    currentSlideIndicator.innerHTML = 1;
+                }else{
+                    self.querySelectorAll('img')[currentImg].style.display="none";
+                    self.querySelectorAll('img')[currentImg+1].style.opacity="0";
+                    currentImg++;
+                    self.querySelectorAll('img')[currentImg].style.display="block";
+                    var fadeValue = 0;
+                    var fadeInterval = setInterval(function(){
+                        fadeValue = fadeValue + 0.1;
+                        self.querySelectorAll('img')[currentImg].style.opacity=fadeValue;
+                        if(fadeValue > 1){
+                            clearInterval(fadeValue);
+                        }
+
+                    }, 30);
+                    currentSlideIndicator.innerHTML = currentImg + 1;
+                }
+
+
+            });
+
+
+
+
 
             this.createShadowRoot().appendChild( slideShowTemplateContent );
 
 
+
+
         }
+
 
 
 
