@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Slide Show</title>
+
+        <template id="slide-showMarkUp">
+            <style>
+                .slideShow{
+                    width: 615px;
+                    margin: 10px auto;
+                    overflow: hidden;
+                }
+                .slideContainer{
+                    width: 6000px;
+                }
+                ::content img{
+                    border: solid #000000 1px;
+                    display: inline-block;
+                    margin: 0 5px;
+                }
+            </style>
+            <div class="slideShow">
+                <div class="slideContainer">
+                    <content select="img"></content>
+                </div>
+                <button class="prv">Previous</button>
+                <button class="nxt">Next</button>
+            </div>
+
+            <script>
+
+            </script>
+        </template>
+
+        <script type="text/javascript">
+            ( function() {
+
+                var slideShowPrototype = Object.create( HTMLElement.prototype );
+
+
+                slideShowPrototype.createdCallback = function(){
+                    var slideShowTemplate = document.querySelector('#slide-showMarkUp');
+                    var slideShowTemplateContent = document.importNode( slideShowTemplate.content, true );
+
+                    console.log(slideShowTemplateContent);
+
+                    this.createShadowRoot().appendChild( slideShowTemplateContent );
+
+
+
+                    this.addEventListener('click', function(e) {
+                        console.log(e);
+
+                    });
+
+                }
+
+                slideShowPrototype.onclick = function(){
+                    console.log("this");
+                }
+
+
+                var slideShow = document.register( 'slide-show', { prototype : slideShowPrototype } );
+
+            } )();
+        </script>
+    </head>
+    <body>
+        <slide-show>
+           <img src="../../presentaion/images/Chrome.jpeg"/>
+           <img src="../../presentaion/images/Chrome.jpeg"/>
+           <img src="../../presentaion/images/Chrome.jpeg"/>
+           <img src="../../presentaion/images/Chrome.jpeg"/>
+           <img src="../../presentaion/images/Chrome.jpeg"/>
+           <img src="../../presentaion/images/Chrome.jpeg"/>
+           <img src="../../presentaion/images/Chrome.jpeg"/>
+        </slide-show>
+
+    </body>
+</html>

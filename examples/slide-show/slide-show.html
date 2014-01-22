@@ -1,0 +1,27 @@
+<template id="slide-showMarkUp">
+            <span class="blink">
+                <content select="img"></content>
+            </span>
+</template>
+
+<script type="text/javascript">
+    ( function() {
+
+        var slideShowPrototype = Object.create( HTMLElement.prototype );
+
+
+        slideShowPrototype.createdCallback = function(){
+            var slideShowTemplate = document.querySelector('#slide-showMarkUp');
+            var slideShowTemplateContent = document.importNode( slideShowTemplate.content, true );
+
+            this.createShadowRoot().appendChild( slideShowTemplateContent );
+
+
+        }
+
+
+
+        var slideShow = document.register( 'slide-show', { prototype : slideShowPrototype } );
+
+    } )();
+</script>
