@@ -56,7 +56,7 @@
 	            </aside>
             </section>
             <section>
-				<h2><blink-item>The &lt;Blink&gt; Tag!</blink-item></h2>
+				<h2>The <blinking-item>&lt;Blink&gt;</blinking-item> Tag!</h2>
             	
             	<aside class="notes">
             		One of these experiments was the failed blink tag implemented in Netscape Navigator.  This tag caused the contained text to blink, as the name would suggest, at a regular interval.  It delighted ever 14 year old aspiring web developer who discovered it and appeared right alongside the visit count on nearly every site.  
@@ -78,7 +78,7 @@
             </section>
             <section data-markdown>
                 <script type="text/template">
-                ## Back to the <blink-item>Blink Tag</blink-item>
+                ## Back to the <blinking-item>Blink Tag</blinking-item>
 
                 ```
                 <span class="blink">I might could blink</span>
@@ -599,11 +599,60 @@
         		<h2>HTML Imports</h2>
         	</section>
         </section>
+        
+        <!-- START Putting it all Together -->
         <section>
         	<section>
         		<h2>Putting it all Together</h2>
         	</section>
+        	<section data-markdown>
+        		<script type="text/template">
+                  ## Blink v2
+
+                  ```
+                  ( function() {
+                                
+                    var blinkTagPrototype = Object.create( HTMLElement.prototype );
+                    blinkTagPrototype.createdCallback = function() {
+                      var blinkTagTemplate = document.querySelector( '#blink-tag-template' );
+                      var blinkTagTemplateClone = document.importNode( blinkTagTemplate.content, true );
+                                        
+                      var shadowRoot = this.createShadowRoot();
+                      shadowRoot.appendChild( blinkTagTemplateClone );
+                                        
+                      var blinkingElement = shadowRoot.querySelector( '.blink' );
+                      var initialOpacity = blinkingElement.style.opacity || 1.0;
+                      var isDisplayed = true;
+                                        
+                      setInterval( function() {
+                        if ( isDisplayed ) {
+                          blinkingElement.style.opacity = 0;
+                          isDisplayed = false;
+                        }        
+                        else {
+                          blinkingElement.style.opacity = initialOpacity;
+                          isDisplayed = true;
+                        }
+                      }, 1000 );
+                    };
+                                
+                    document.register( 'blinking-item', { prototype : blinkTagPrototype } );        
+                                
+                  } )();
+
+                  ...
+
+                  <template id="blink-tag-template">
+                    <span class="blink"><content></content></span>
+                  </template>
+                  ```
+
+                  <p>And as the kids say --- <blinking-item>&quot;booyah&quot;</blinking-item></p>
+				</script>
+        	</section>
         </section>
+        <!-- END Putting it all Together -->
+        
         <section>
             <h2>What does this give us?</h2>
             <ul>
@@ -646,6 +695,10 @@
 
 </div>
 
+<template id="blink-tag-template">
+    <span class="blink"><content></content></span>
+</template>
+                  
 <script src="lib/js/head.min.js"></script>
 <script src="js/reveal.min.js"></script>
 
@@ -747,6 +800,37 @@
             shadowRoot.appendChild( shadowDomTemplateContent );
             
    	 	} )();
+    	
+    	//Blinking Item Implementation
+        ( function() {
+            
+            var blinkTagPrototype = Object.create( HTMLElement.prototype );
+            blinkTagPrototype.createdCallback = function() {
+                    var blinkTagTemplate = document.querySelector( '#blink-tag-template' );
+                    var blinkTagTemplateClone = document.importNode( blinkTagTemplate.content, true );
+                    
+                    var shadowRoot = this.createShadowRoot();
+                    shadowRoot.appendChild( blinkTagTemplateClone );
+                    
+                    var blinkingElement = shadowRoot.querySelector( '.blink' );
+                    var initialOpacity = blinkingElement.style.opacity || 1.0;
+                    var isDisplayed = true;
+                    
+                    setInterval( function() {
+                            if ( isDisplayed ) {
+                                    blinkingElement.style.opacity = 0;
+                                    isDisplayed = false;
+                            }        
+                            else {
+                                    blinkingElement.style.opacity = initialOpacity;
+                                    isDisplayed = true;
+                            }
+                    }, 1000 );
+            };
+            
+            var blinkTag = document.register( 'blinking-item', { prototype : blinkTagPrototype } );        
+            
+    	} )();
     	
     } );
 
