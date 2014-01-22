@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 
-    <title>reveal.js - The HTML Presentation Framework</title>
+    <title>Web Components</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -44,14 +44,83 @@
             </p>
         </section>
 
+		<!-- START Introduction -->
         <section>
-            <h2>What are Web Components?</h2>
+        	<section>
+	            <h2>Introduction</h2>
+	
+	            <p class="fragment"><a href="http://code.divshot.com/geo-bootstrap/?codekitCB=412015712.346685">The Early Days of HTML</a></p>
+	            
+	            <aside class="notes">
+	            	During the days of AOL dialup and animated gifs as ubiquitous as cat videos HTML was in its infancy as a markup language and browsers were experimenting with the capabilities which could be added.
+	            </aside>
+            </section>
+            <section>
+				<h2><blink-item>The Blink Tag!</blink-item></h2>
+            	
+            	<aside class="notes">
+            		One of these experiments was the failed blink tag implemented in Netscape Navigator.  This tag caused the contained text to blink, as the name would suggest, at a regular interval.  It delighted ever 14 year old aspiring web developer who discovered it and appeared right alongside the visit count on nearly every site.  
+            	</aside>
+            </section>
+            <section>
+            	<h2>Markup Standardization</h2>
+            	
+            	<aside class="notes">
+            		Some time later browsers moved away from some of these custom tags and HTML was generalized as a markup language optimized for document layout.  This gave us markup such as ‘div’, ‘span’, ‘p’, ‘table’, etc, which could all be used in conjunction with style sheets to produce the web version of a brochure. 
+            	</aside>
+            </section>
+            <section>
+            	<h2>The Current Situation</h2>
+            	
+            	<aside class="notes">
+            		Now pages behaving as applications is becoming increasingly common, and this can produce tension between the needs of the application and the document-centric nature historically present in HTML markup
+            	</aside>
+            </section>
+            <section>
+				<h2>Back to the <blink-item>Blink Tag</blink-item></h2>
 
-            <ul>
-                <li class="fragment"><a href="http://code.divshot.com/geo-bootstrap/?codekitCB=412015712.346685"> The old days of the web</a></li>
-            </ul>
+				<pre>
+					<code class="html" data-trim>
+<span class="blink">I might could blink</span>
 
+<script type="text/javascript">
+	
+  $( document ).ready( function() {
+    setInterval( function() {
+      $( '.blink' ).css( 
+        'opacity', 
+        function() { 
+          return 1.0 - $( this ).css( 'opacity' ); 
+      } );
+    }, 1000 );
+  } );
+</script>
+					</code>
+				</pre>
+            	<aside class="notes">
+            		While the blink tag is laughable today, it’s actually particularly useful to have such a capable tag if it serves your purpose.  Let’s take a look at an implementation of the functionality this tag provided which you might produce when faced with similar requirements.
+            	</aside>
+            </section>
+            <section>
+            	<h2>Some Problems With This Implementation</h2>
+            	<ol>
+            		<li class="fragment">First, the markup is not particularly meaningful.  It is a span - which to start with is a meaningless piece of markup</li>
+            		<li class="fragment">The only semantically meaningful item here is the class attribute</li>
+            		<li class="fragment">The javascript looks for spans with a &quot;blink&quot; class.  This means that you need to ensure that no other spans on your site ever have a &quot;blink&quot; class unless you want them to blink</li>
+            		<li class="fragment">You also need to ensure that no other Javascript or CSS which you write or include acts upon things with a &quot;blink&quot; class</li>
+            	</ol>
+            </section>
+            <section>
+            	<h2>Enter Web Components</h2>
+            	
+            	<aside class="notes">
+            		The blink tag did not have these issues.  You could have spans, or anything else, with a &quot;blink&quot; class, which would have no effect on the blink tag or its behavior.  As an application developer, what you want to be able to do is reproduce the blink tag and cause the tag to encapsulate the functionality which Netscape imbued the blink tag with - and with Web Components, you can!
+            	</aside>
+            </section>
         </section>
+        
+        
+        <!-- END Introduction -->
 
         <!-- Example of nested vertical slides -->
         <section>
